@@ -6,17 +6,27 @@ import WriteEditor from '../components/WriteEditor';
 import {useNavigation} from '@react-navigation/native';
 import LogContext from '../contexts/LogContext';
 
-const WriteScreen = () => {
+const WriteScreen = ({route}) => {
+  const log = route.params?.log;
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const navigation = useNavigation();
-  const {onCreate} = useContext(LogContext);
+  const {onCreate, onModify} = useContext(LogContext);
   const onSave = () => {
-    onCreate({
-      title,
-      body,
-      date: new Date().toISOString(),
-    });
+    if(log) {
+      onModify({
+        id: log.id,
+        date: log.date,
+        title,
+        body,
+      });
+    } else {
+      onCreate({
+        title,
+        body,
+        date: new Date().toISOString(),
+      });
+    }
     navigation.pop();
   };
   return (
